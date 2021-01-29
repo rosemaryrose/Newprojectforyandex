@@ -21,10 +21,13 @@ import os
 FPS = 50
 display_size = 960, 640
 tile_width = tile_height = 64
+speed = 10
 
 other_group = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
+
+playing_now_level = 'level1'
 
 
 def load_image(name, colorkey=None):
@@ -42,42 +45,57 @@ tile_images = {
     'door': load_image('door.png'),
     'wall': load_image('wall.png'),
     'stage': load_image('stage.png'),
+    'hero': load_image('hero1.png'),
 }
 
-hero = load_image('floor.png')
 
-
-class Player(pygame.sprite.Sprite):
+class Creature(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
-        self.image = hero
-        self.rect = self.image.get_rect().move(
-            tile_width * pos_x, tile_height * pos_y)
+
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+
+
+class Hero(Creature):
+    def __init__(self, creature_picture, pos_x, pos_y):
+        super().__init__(pos_x, pos_y)
+
+        self.image = tile_images[creature_picture]
+        self.rect = self.image.get_rect().move((display_size[0] - tile_width) // 2,
+                                               (display_size[1] - tile_height) // 2)
+
+    def attack(self):
+        pass
 
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__()
         self.image = tile_images[tile_type]
-        self.rect = self.image.get_rect().move(
-            tile_width * pos_x, tile_height * pos_y)
+        self.rect = self.image.get_rect().move(pos_x, pos_y)
 
 
-def level_render(level):
-    tiles_group.empty()
-    with open('data/levels/' + level + '.txt', 'r', encoding='UTF-8') as f:
+def get_level():
+    with open('data/levels/' + playing_now_level + '.txt', 'r', encoding='UTF-8') as f:
         level = f.read().split('\n')
+    return level
 
-        for i in range(len(level)):
-            for j in range(len(level[i])):
-                if level[i][j] == '#':
-                    tiles_group.add(Tile('wall', j, i))
-                elif level[i][j] == '.':
-                    tiles_group.add(Tile('floor', j, i))
-                elif level[i][j] == '0':
-                    tiles_group.add(Tile('door', j, i))
-                elif level[i][j] == '=':
-                    tiles_group.add(Tile('stage', j, i))
+
+def level_render_prepare(delta_x=0, delta_y=0):
+    tiles_group.empty()
+    level = get_level()
+
+    for i in range(len(level)):
+        for j in range(len(level[i])):
+            if level[i][j] == '#':
+                tiles_group.add(Tile('wall', j * tile_width + delta_x, i * tile_height + delta_y))
+            elif level[i][j] == '.':
+                tiles_group.add(Tile('floor', j * tile_width + delta_x, i * tile_height + delta_y))
+            elif level[i][j] == '0':
+                tiles_group.add(Tile('door', j * tile_width + delta_x, i * tile_height + delta_y))
+            elif level[i][j] == '=':
+                tiles_group.add(Tile('stage', j * tile_width + delta_x, i * tile_height + delta_y))
 
 
 def start_screen():  # функция заставки
