@@ -74,7 +74,7 @@ class Nonogram:
         self.left = 0
         self.lives = 10
         self.k = 0
-        file = 'data/nonogram' + level + '.txt'
+        file = 'data/nonogram_level/nonogram' + level + '.txt'
         if os.path.exists(file):
             with open(file) as f:
                 lines_file = f.read().split('\n')
