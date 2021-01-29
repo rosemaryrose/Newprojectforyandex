@@ -10,6 +10,7 @@ def terminate():
 
 
 def start_screen():
+    # Рисуется начальный экран
     screen.fill((255, 255, 255))
     intro_text = ["Nonogram", "",
                   "Правила миниигры:",
@@ -41,6 +42,7 @@ def start_screen():
 
 
 def end_screen():
+    # Рисуется конечный экран
     screen.fill((255, 255, 255))
     outro_text = ["Миниигра пройдена!",
                   "Нажми на какую-нибудь клавишу",
@@ -68,6 +70,7 @@ def end_screen():
 
 
 class Nonogram:
+    # Класс для головоломки
     def __init__(self, level):
         self.cs = 20
         self.top = 100
@@ -78,12 +81,14 @@ class Nonogram:
         if os.path.exists(file):
             with open(file) as f:
                 lines_file = f.read().split('\n')
+        # Заполнение готового поля из файла
         self.filled_board = [[int(j) for j in list(i)] for i in lines_file]
         self.board = [[0 for i in range(10)] for j in range(10)]
         self.vertical = []
         self.horizontal = []
         self.filled_cells = 0
-
+        
+        # Заполнение вертикальных рядов
         for line in range(10):
             k = 0
             full_line = []
@@ -97,7 +102,8 @@ class Nonogram:
             if k != 0:
                 full_line.append(str(k))
             self.vertical.append('  '.join(full_line))
-
+            
+        # Заполнение горизонтальных рядов
         for column in range(10):
             k = 0
             full_column = []
@@ -112,6 +118,7 @@ class Nonogram:
             self.horizontal.append(full_column)
 
     def render(self):
+        # Поляснение к правилам
         help_text = ["Закрашивай нужную клетку с помощью",
                      "левой кнопки мыши и отмечай пустые ",
                      "клетки крестами правой кнопкой.",
@@ -128,9 +135,11 @@ class Nonogram:
             screen.blit(string_rendered, intro_rect)
         pygame.draw.rect(screen, (0, 0, 0),
                          ((self.left + 5 * self.cs - 1, self.top + 5 * self.cs - 1), (202, 202)), 1)
+        # Рисуются поле и ряды чисел
         for i in range(15):
             for j in range(15):
                 if i >= 5 and j >= 5:
+                    # Рисование крестов, синих клеток или пустых клеток в зависимости от значений в self.board
                     pygame.draw.rect(screen, (0, 0, 0),
                                      ((self.left + i * self.cs, self.top + j * self.cs), (self.cs, self.cs)), 1)
                     if self.board[i - 5][j - 5] == 1:
@@ -176,6 +185,7 @@ class Nonogram:
             self.on_click(cell, button)
 
     def get_cell(self, mouse_pos):
+        # Позиция курсора на поле после нажатия кнопок мыши
         x = mouse_pos[0] - self.left
         y = mouse_pos[1] - self.top
         if (x < self.cs * 5) or (y < self.cs * 5) or (x > self.cs * 15) or (y > self.cs * 15):
@@ -185,6 +195,7 @@ class Nonogram:
 
     def on_click(self, cell, button):
         global game_over
+        # Изменение поля в зависимости от нажатия и правильной картинки поля
         if self.board[cell[0]][cell[1]] == 0:
             if self.filled_board[cell[1]][cell[0]] == 0 and button == 1:
                 self.board[cell[0]][cell[1]] = 3
@@ -206,6 +217,7 @@ class Nonogram:
             if button == 1 and self.filled_board[cell[1]][cell[0]] == 0:
                 self.board[cell[0]][cell[1]] = 3
         if self.k == self.filled_cells:
+            # Победа
             print('win')
             pygame.time.delay(2000)
             end_screen()
