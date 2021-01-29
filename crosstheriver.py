@@ -9,6 +9,7 @@ def terminate():
 
 
 class Board(pygame.sprite.Sprite):
+    # Класс для спрайтов брёвен, плывущих по реке
     def __init__(self, y, x=0):
         super().__init__(all_sprites)
         self.add(boards)
@@ -16,6 +17,7 @@ class Board(pygame.sprite.Sprite):
         self.width = 15
         self.y = y
         self.added = False
+        # Справа или слева бревно поплывёт
         if x != 0:
             if x < 0:
                 self.n = -self.length
@@ -28,6 +30,7 @@ class Board(pygame.sprite.Sprite):
         pygame.draw.rect(self.image, (73, 19, 13),
                          (0, 0, self.length, self.width), 0)
         self.rect = pygame.Rect((self.n, self.y), (self.length, self.width))
+        # Выбор скорости, с которой спрайт 'плывёт'
         if self.n < 0:
             self.vx = randrange(2, 5)
         else:
@@ -39,13 +42,16 @@ class Board(pygame.sprite.Sprite):
                 (self.n < 0 and self.rect.x > 140)) and (not self.added):
             Board(self.y, self.n)
             self.added = True
+        # Проверка, не выплыл ли спрайт за границы экрана
         if not self.rect.colliderect(screen_rect):
+            # Если да, то с в том же направлении поплывёт новый спрайт
             if not self.added:
                 Board(self.y, self.n)
             self.kill()
 
 
 class Land(pygame.sprite.Sprite):
+    # Класс для спрайтов земли сверху и снизу
     def __init__(self, x):
         super().__init__(all_sprites)
         self.add(land)
@@ -59,6 +65,7 @@ class Land(pygame.sprite.Sprite):
 
 
 class Gamer(pygame.sprite.Sprite):
+    # Класс для спрайта игрока
     def __init__(self):
         super().__init__(all_sprites)
         self.add(gamer)
@@ -70,6 +77,7 @@ class Gamer(pygame.sprite.Sprite):
     def update(self, *kp):
         global game_over
         if len(kp) > 0:
+            # Передвижение игрока
             if kp[0] == pygame.K_LEFT:
                 self.rect.x += -20
             if kp[0] == pygame.K_UP:
@@ -84,14 +92,17 @@ class Gamer(pygame.sprite.Sprite):
             game_over = True
             print('game over')
         elif m == land.sprites()[0]:
+            # Окончание игры, если игрок дошёл до конца
             print('win')
             end_screen()
             terminate()
         elif n:
+            # Если игрок стоит на бревне, то его скорость равна скорости бревна
             self.rect.x += n.vx
 
 
 def start_screen():
+    # Рисуется начальный экран
     screen.fill((255, 255, 255))
     intro_text = ["Cross the river", "",
                   "Правила миниигры:",
@@ -123,6 +134,7 @@ def start_screen():
 
 
 def end_screen():
+    # Рисуется конечный экран
     screen.fill((255, 255, 255))
     intro_text = ["Ты успешно прошёл миниигру!",
                   "Нажми на какую-нибудь клавишу",
@@ -161,6 +173,7 @@ screen_rect = (0, 0, 300, 400)
 
 while running:
     if game_over:
+        # Объявляются группы спрайтов и др для начала игры
         start_screen()
         all_sprites = pygame.sprite.Group()
         land = pygame.sprite.Group()
