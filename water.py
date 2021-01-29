@@ -10,6 +10,7 @@ def terminate():
 
 
 def start_screen():
+    # Рисование начального экрана
     screen.fill((255, 255, 255))
     intro_text = ["Plumber", "",
                   "Правила миниигры:",
@@ -38,6 +39,7 @@ def start_screen():
 
 
 def end_screen():
+    # Рисование конечного экрана
     screen.fill((255, 255, 255))
     outro_text = ["Миниигра пройдена!",
                   "Нажми на какую-нибудь клавишу",
@@ -65,6 +67,7 @@ def end_screen():
 
 
 def load_image(name):
+    # Загрузка изображения
     fullname = os.path.join('data', 'plumber', name)
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
@@ -81,6 +84,7 @@ screen = pygame.display.set_mode(size)
 
 
 class WaterPipes(pygame.sprite.Sprite):
+    # Класс для спрайтов всех труб
     water_pipes = []
     pipes = []
     for i in range(1, 13):
@@ -98,6 +102,7 @@ class WaterPipes(pygame.sprite.Sprite):
 
 
 class MovingPipes(WaterPipes):
+    # Класс для спрайтов тех труб, которые можно поворачивать
     def __init__(self, x, i, j):
         if x < 5:
             num1 = 1
@@ -113,6 +118,7 @@ class MovingPipes(WaterPipes):
         self.add(moving_pipes)
 
     def update(self, pos):
+        # Изменение изображения спрайта при нажатии на повёрнутое на 90 градусов
         if self.rect.x < pos[0] < (self.rect.x + self.rect.width) and \
                 self.rect.y < pos[1] < (self.rect.y + self.rect.height):
             if self.num < 5:
@@ -126,6 +132,7 @@ class MovingPipes(WaterPipes):
             self.image = WaterPipes.pipes[self.num - 1]
             board[self.rect.y // 50 - 3][(self.rect.x // 50) - 1] = self.num
 
+            # Если система из труб собрана, заменить изображения на трубы с водой и закончить игру
             if board == map1:
                 all_sprites.draw(screen)
                 for sp in all_sprites.sprites():
@@ -149,9 +156,11 @@ game_over = True
 while running:
     if game_over:
         start_screen()
+        # Объявление необходимых классов
         all_sprites = pygame.sprite.Group()
         moving_pipes = pygame.sprite.Group()
         file = 'data/plumber/plumber' + str(randrange(1, 3)) + '.txt'
+        # Считывание уровня из файла
         if os.path.exists(file):
             with open(file) as f:
                 lines_file = f.read().split('\n')
@@ -178,6 +187,7 @@ while running:
             moving_pipes.update(event.pos)
     screen.fill((255, 255, 255))
     all_sprites.draw(screen)
+    # Пояснение правил
     help_text = ["Поворачивай кусочки труб",
                  "нажатием левой кнопки мыши"]
     font1 = pygame.font.Font(None, 21)
