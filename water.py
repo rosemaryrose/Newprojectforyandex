@@ -171,7 +171,7 @@ while running:
             for i in range(len(a1)):
                 if a1[i][0] == 0:
                     WaterPipes(5, a1[i][0], a1[i][1])
-            map1 = [[int(j) for j in i.split(' ')] for i in lines_file[1:] if i != '']
+            map1 = [[int(j) for j in i.split(' ') if j != ''] for i in lines_file[1:] if i != '']
             for i in range(a[0]):
                 for j in range(a[1]):
                     if map1[j][i] != 0:
