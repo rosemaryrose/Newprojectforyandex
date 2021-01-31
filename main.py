@@ -10,33 +10,42 @@ if __name__ == '__main__':
 
     start_screen()  # заставка
 
-    h = Hero('hero', 0, 0)
-    player_group.add(h)
+    level = Level('level1')
+    level_map = level.get_level()
 
-    level = get_level()
+    hero = Hero(level.spawn_point[0] * tile_width, level.spawn_point[1] * tile_height)
+    player_group.add(hero)
+
     while True:
         key = pygame.key.get_pressed()
 
         if key[pygame.K_w]:
-            h.pos_y += speed
+            level.move(0, speed)
+            hero.pos_y -= speed
 
         if key[pygame.K_a]:
-            h.pos_x += speed
+            level.move(speed, 0)
+            hero.pos_x -= speed
 
         if key[pygame.K_s]:
-            h.pos_y -= speed
+            level.move(0, -speed)
+            hero.pos_x += speed
 
         if key[pygame.K_d]:
-            h.pos_x -= speed
+            level.move(-speed, 0)
+            hero.pos_y += speed
 
         for event in pygame.event.get():
+            if key[pygame.K_t]:
+                print(str(hero.pos_x) + '  ' + str(hero.pos_y))
+
             if event.type == pygame.QUIT:
                 terminate()
 
-        level_render_prepare(h.pos_x, h.pos_y)
+        level.level_render_prepare()
 
         screen.fill((0, 0, 0))
-        tiles_group.draw(screen)
+        level.sprite_group.draw(screen)
         other_group.draw(screen)
         player_group.draw(screen)
 
