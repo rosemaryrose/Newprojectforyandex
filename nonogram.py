@@ -87,7 +87,7 @@ class Nonogram:
         self.vertical = []
         self.horizontal = []
         self.filled_cells = 0
-        
+
         # Заполнение вертикальных рядов
         for line in range(10):
             k = 0
@@ -102,7 +102,7 @@ class Nonogram:
             if k != 0:
                 full_line.append(str(k))
             self.vertical.append('  '.join(full_line))
-            
+
         # Заполнение горизонтальных рядов
         for column in range(10):
             k = 0
@@ -145,7 +145,7 @@ class Nonogram:
                     if self.board[i - 5][j - 5] == 1:
                         pygame.draw.rect(screen, (21, 18, 126),
                                          ((self.left + i * self.cs + 1, self.top + j * self.cs + 1),
-                                         (self.cs - 2, self.cs - 2)), 0)
+                                          (self.cs - 2, self.cs - 2)), 0)
                     elif self.board[i - 5][j - 5] == 2:
                         x1 = self.left + i * self.cs
                         y1 = self.top + j * self.cs
@@ -216,9 +216,43 @@ class Nonogram:
                 self.k += 1
             if button == 1 and self.filled_board[cell[1]][cell[0]] == 0:
                 self.board[cell[0]][cell[1]] = 3
+        s_one1 = 0
+        s_one2 = 0
+        s_one_filled1 = 0
+        s_one_filled2 = 0
+        for i in range(10):
+            if self.board[cell[0]][i] == 1:
+                s_one1 += 1
+            if self.filled_board[i][cell[0]] == 1:
+                s_one_filled1 += 1
+            if self.board[i][cell[1]] == 1:
+                s_one2 += 1
+            if self.filled_board[cell[1]][i] == 1:
+                s_one_filled2 += 1
+
+        if s_one1 == s_one_filled1:
+            for i in range(10):
+                if self.board[cell[0]][i] == 0:
+                    self.board[cell[0]][i] = 2
+        if s_one2 == s_one_filled2:
+            for i in range(10):
+                if self.board[i][cell[1]] == 0:
+                    self.board[i][cell[1]] = 2
+
         if self.k == self.filled_cells:
             # Победа
+            screen.fill((255, 255, 255))
             print('win')
+            for i in range(10):
+                for j in range(10):
+                    # Рисование крестов, синих клеток
+                    pygame.draw.rect(screen, (0, 0, 0),
+                                     ((100 + self.left + i * self.cs, 100 + self.top + j * self.cs), (self.cs, self.cs)), 1)
+                    if self.filled_board[j][i] == 1:
+                        pygame.draw.rect(screen, (21, 18, 126),
+                                         ((100 + self.left + i * self.cs + 1, 100 + self.top + j * self.cs + 1),
+                                         (self.cs - 2, self.cs - 2)), 0)
+            pygame.display.flip()
             pygame.time.delay(2000)
             end_screen()
             terminate()
