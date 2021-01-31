@@ -18,10 +18,10 @@ import sys
 import os
 
 # переменные
-FPS = 50
+FPS = 120  # ного fps грузит комп
 display_size = 960, 704
 tile_width = tile_height = 64
-speed = 10
+speed = 4  # обязательно степень двойки 2 4 8 и тд
 
 other_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
@@ -70,7 +70,7 @@ class Level:
         delta_y = self.pos_y
 
         self.sprite_group.empty()
-        level = self.get_level()
+        level = self.get_level_map()
 
         for i in range(len(level)):
             for j in range(len(level[i])):
@@ -83,7 +83,7 @@ class Level:
                 elif level[i][j] == '=':
                     self.sprite_group.add(Tile('stage', j * tile_width + delta_x, i * tile_height + delta_y))
 
-    def get_level(self):
+    def get_level_map(self):
         with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
             level = f.read().split('\n')[1:]
         return level
@@ -101,6 +101,8 @@ class Level:
 class Hero(Creature):
     def __init__(self, pos_x, pos_y):
         super().__init__(pos_x, pos_y)
+        self.width = 48
+        self.height = 32
 
         self.image = tile_images['hero1']
         self.rect = self.image.get_rect().move((display_size[0] - tile_width) // 2,
@@ -112,12 +114,64 @@ class Hero(Creature):
     def attack(self):
         pass
 
-    def cell_action(self, level, way):
-        if way == 'w':
-            cell = (self.pos_x // tile_width, self.pos_y // tile_width)
+    def can_go_way(self, level, way):
+        cell = [self.pos_x + (tile_width - self.width) // 2, self.pos_y + tile_height - self.height]
+        cell1 = [self.pos_x + tile_width - (tile_width - self.width) // 2, self.pos_y + tile_height - self.height]
+        cell2 = [self.pos_x + tile_width - (tile_width - self.width) // 2, self.pos_y + tile_height]
+        cell3 = [self.pos_x + (tile_width - self.width) // 2, self.pos_y + tile_height]
 
-            if level[cell[0]][cell[1]] == '#':
-                return level[cell[0]][cell[1]]
+        if way == 'w':
+            cell[1] -= speed
+        elif way == 's':
+            cell[1] += speed
+        elif way == 'a':
+            cell[0] -= speed
+        elif way == 'd':
+            cell[0] += speed
+        
+        if way == 'w':
+            cell1[1] -= speed
+        elif way == 's':
+            cell1[1] += speed
+        elif way == 'a':
+            cell1[0] -= speed
+        elif way == 'd':
+            cell1[0] += speed
+            
+        if way == 'w':
+            cell2[1] -= speed
+        elif way == 's':
+            cell2[1] += speed
+        elif way == 'a':
+            cell2[0] -= speed
+        elif way == 'd':
+            cell2[0] += speed
+        
+        if way == 'w':
+            cell3[1] -= speed
+        elif way == 's':
+            cell3[1] += speed
+        elif way == 'a':
+            cell3[0] -= speed
+        elif way == 'd':
+            cell3[0] += speed
+
+        cell = get_cell(cell)
+        cell1 = get_cell(cell1)
+        cell2 = get_cell(cell2)
+        cell3 = get_cell(cell3)
+        if level[cell[1]][cell[0]] == '#':
+            return False
+        if level[cell1[1]][cell1[0]] == '#':
+            return False
+        if level[cell2[1]][cell2[0]] == '#':
+            return False
+        if level[cell3[1]][cell3[0]] == '#':
+            return False
+        return True
+
+    def cell_action(self, level, way):
+        pass
 
 
 class Tile(pygame.sprite.Sprite):
@@ -125,6 +179,13 @@ class Tile(pygame.sprite.Sprite):
         super().__init__()
         self.image = tile_images[tile_type]
         self.rect = self.image.get_rect().move(pos_x, pos_y)
+
+
+def get_cell(m_pos):
+    w = m_pos[0]
+    h = m_pos[1]
+
+    return [w // tile_width, h // tile_height]
 
 
 def start_screen():  # функция заставки

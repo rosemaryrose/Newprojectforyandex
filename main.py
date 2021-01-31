@@ -11,7 +11,7 @@ if __name__ == '__main__':
     start_screen()  # заставка
 
     level = Level('level1')
-    level_map = level.get_level()
+    level_map = level.get_level_map()
 
     hero = Hero(level.spawn_point[0] * tile_width, level.spawn_point[1] * tile_height)
     player_group.add(hero)
@@ -20,24 +20,31 @@ if __name__ == '__main__':
         key = pygame.key.get_pressed()
 
         if key[pygame.K_w]:
-            level.move(0, speed)
-            hero.pos_y -= speed
+            if hero.can_go_way(level_map, 'w'):
+                level.move(0, speed)
+                hero.pos_y -= speed
 
         if key[pygame.K_a]:
-            level.move(speed, 0)
-            hero.pos_x -= speed
+            if hero.can_go_way(level_map, 'a'):
+                level.move(speed, 0)
+                hero.pos_x -= speed
 
         if key[pygame.K_s]:
-            level.move(0, -speed)
-            hero.pos_x += speed
+            if hero.can_go_way(level_map, 's'):
+                level.move(0, -speed)
+                hero.pos_y += speed
 
         if key[pygame.K_d]:
-            level.move(-speed, 0)
-            hero.pos_y += speed
+            if hero.can_go_way(level_map, 'd'):
+                level.move(-speed, 0)
+                hero.pos_x += speed
 
         for event in pygame.event.get():
             if key[pygame.K_t]:
                 print(str(hero.pos_x) + '  ' + str(hero.pos_y))
+                cell = get_cell((hero.pos_x, hero.pos_y))
+                print(cell)
+                print(level_map[cell[1]][cell[0]])
 
             if event.type == pygame.QUIT:
                 terminate()
