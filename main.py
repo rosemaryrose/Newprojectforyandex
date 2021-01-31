@@ -14,28 +14,32 @@ if __name__ == '__main__':
     level_map = level.get_level_map()
 
     hero = Hero(level.spawn_point[0] * tile_width, level.spawn_point[1] * tile_height)
-    player_group.add(hero)
 
     while True:
         key = pygame.key.get_pressed()
+        hero.flip_picture('hero1')
 
         if key[pygame.K_w]:
             if hero.can_go_way(level_map, 'w'):
+                hero.flip_picture('hero4')
                 level.move(0, speed)
                 hero.pos_y -= speed
 
         if key[pygame.K_a]:
             if hero.can_go_way(level_map, 'a'):
+                hero.flip_picture('hero2')
                 level.move(speed, 0)
                 hero.pos_x -= speed
 
         if key[pygame.K_s]:
             if hero.can_go_way(level_map, 's'):
+                hero.flip_picture('hero1')
                 level.move(0, -speed)
                 hero.pos_y += speed
 
         if key[pygame.K_d]:
             if hero.can_go_way(level_map, 'd'):
+                hero.flip_picture('hero3')
                 level.move(-speed, 0)
                 hero.pos_x += speed
 
@@ -58,15 +62,15 @@ if __name__ == '__main__':
             level_map = level.get_level_map()
 
             hero = Hero(x * tile_width, y * tile_height)
-            player_group.empty()
-            player_group.add(hero)
+            hero.sprite_group.empty()
+            hero.sprite_group.add(hero)
 
         level.level_render_prepare()
 
         screen.fill((0, 0, 0))
         level.sprite_group.draw(screen)
         other_group.draw(screen)
-        player_group.draw(screen)
+        hero.sprite_group.draw(screen)
 
         pygame.display.flip()
         clock.tick(FPS)

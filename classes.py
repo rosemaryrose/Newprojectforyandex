@@ -25,7 +25,6 @@ tile_width = tile_height = 64
 speed = 4  # обязательно степень двойки 2 4 8 и тд
 
 other_group = pygame.sprite.Group()
-player_group = pygame.sprite.Group()
 
 
 def load_image(name, colorkey=None):
@@ -51,6 +50,8 @@ tile_images = {
     'donut': load_image('donut.png'),  # символ: !
     'hero1': load_image('hero1.png'),
     'hero2': load_image('hero2.png'),
+    'hero3': load_image('hero3.png'),
+    'hero4': load_image('hero4.png'),
 }
 
 
@@ -151,13 +152,22 @@ class Hero(Creature):
         super().__init__(pos_x, pos_y)
         self.width = 48
         self.height = 32
+        self.sprite_group = pygame.sprite.Group()
 
         self.image = tile_images['hero1']
         self.rect = self.image.get_rect().move((display_size[0] - tile_width) // 2,
                                                (display_size[1] - tile_height) // 2)
 
-    def flip_picture(self):
-        pass
+        self.sprite_group.add(self)
+
+    def flip_picture(self, picture_name):
+        self.sprite_group.empty()
+
+        self.image = tile_images[picture_name]
+        self.rect = self.image.get_rect().move((display_size[0] - tile_width) // 2,
+                                               (display_size[1] - tile_height) // 2)
+
+        self.sprite_group.add(self)
 
     def attack(self):
         pass
