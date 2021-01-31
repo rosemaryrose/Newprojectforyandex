@@ -55,6 +55,11 @@ if __name__ == '__main__':
                               hero.pos_y + tile_height - hero.height // 2))
 
         if hero.in_cell(level_map) == '0':
+            res = level.doors[str(hero_cell)][1]
+
+            if res == 'exit':
+                terminate()
+
             x = level.doors[str(hero_cell)][0][0]
             y = level.doors[str(hero_cell)][0][1]
 
