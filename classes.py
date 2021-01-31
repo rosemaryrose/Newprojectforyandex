@@ -56,9 +56,20 @@ class Creature(pygame.sprite.Sprite):
 
 
 class Level:
-    def __init__(self, level_name):
+    def __init__(self, level_name, spawn_point=None):
         self.level_name = level_name
-        self.spawn_point = self.get_spawn_point()
+
+        if spawn_point is None:
+            self.spawn_point = self.get_spawn_point()
+        else:
+            self.spawn_point = spawn_point
+        self.doors = {}
+
+        with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
+            level = f.read().split('\n')
+
+            for i in range(self.get_door_number()):
+                self.doors[str(self.get_door_cell(i))] = [self.get_door_spawn(i), self.get_next_level(i)]
 
         self.pos_x = (display_size[0] - tile_width) // 2 - self.spawn_point[0] * tile_width
         self.pos_y = (display_size[1] - tile_height) // 2 - self.spawn_point[1] * tile_height
@@ -85,13 +96,33 @@ class Level:
 
     def get_level_map(self):
         with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
-            level = f.read().split('\n')[1:]
+            level = f.read().split('\n')[self.get_door_number() * 3 + 2:]
         return level
 
     def get_spawn_point(self):
         with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
             spawn = f.read().split('\n')[0]
         return list(map(int, spawn.split(',')))
+
+    def get_next_level(self, n):
+        with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
+            next_level = f.read().split('\n')[4 + 3 * n]
+        return next_level
+
+    def get_door_spawn(self, n):
+        with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
+            door_spawn = f.read().split('\n')[3 + 3 * n]
+        return list(map(int, door_spawn.split(',')))
+
+    def get_door_cell(self, n):
+        with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
+            door_spawn = f.read().split('\n')[2 + 3 * n]
+        return list(map(int, door_spawn.split(',')))
+
+    def get_door_number(self):
+        with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
+            number = f.read().split('\n')[1]
+        return int(number)
 
     def move(self, delta_x, delta_y):
         self.pos_x += delta_x
@@ -117,8 +148,8 @@ class Hero(Creature):
     def can_go_way(self, level, way):
         cell = [self.pos_x + (tile_width - self.width) // 2, self.pos_y + tile_height - self.height]
         cell1 = [self.pos_x + tile_width - (tile_width - self.width) // 2, self.pos_y + tile_height - self.height]
-        cell2 = [self.pos_x + tile_width - (tile_width - self.width) // 2, self.pos_y + tile_height]
-        cell3 = [self.pos_x + (tile_width - self.width) // 2, self.pos_y + tile_height]
+        cell2 = [self.pos_x + tile_width - (tile_width - self.width) // 2, self.pos_y + tile_height - 1]
+        cell3 = [self.pos_x + (tile_width - self.width) // 2, self.pos_y + tile_height - 1]
 
         if way == 'w':
             cell[1] -= speed
@@ -128,7 +159,7 @@ class Hero(Creature):
             cell[0] -= speed
         elif way == 'd':
             cell[0] += speed
-        
+
         if way == 'w':
             cell1[1] -= speed
         elif way == 's':
@@ -137,7 +168,7 @@ class Hero(Creature):
             cell1[0] -= speed
         elif way == 'd':
             cell1[0] += speed
-            
+
         if way == 'w':
             cell2[1] -= speed
         elif way == 's':
@@ -146,7 +177,7 @@ class Hero(Creature):
             cell2[0] -= speed
         elif way == 'd':
             cell2[0] += speed
-        
+
         if way == 'w':
             cell3[1] -= speed
         elif way == 's':
@@ -170,8 +201,10 @@ class Hero(Creature):
             return False
         return True
 
-    def cell_action(self, level, way):
-        pass
+    def in_cell(self, level):
+        cell = get_cell((self.pos_x + (tile_width - self.width) // 2 + self.width // 2,
+                         self.pos_y + tile_height - self.height // 2))
+        return level[cell[1]][cell[0]]
 
 
 class Tile(pygame.sprite.Sprite):
