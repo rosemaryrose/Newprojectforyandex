@@ -16,6 +16,7 @@
 import pygame
 import sys
 import os
+import random
 
 # переменные
 FPS = 120  # ного fps грузит комп
@@ -38,10 +39,16 @@ def load_image(name, colorkey=None):
 
 
 tile_images = {
-    'floor': load_image('floor.png'),
-    'door': load_image('door.png'),
-    'wall': load_image('wall.png'),
-    'stage': load_image('stage.png'),
+    'floor1': load_image('floor1.png'),  # символ: .
+    'floor2': load_image('floor3.png'),  # символ: ,
+    'door': load_image('door.png'),  # символ: 0
+    'wall': load_image('wall.png'),  # символ: -
+    'ceiling': load_image('ceiling.png'),  # символ: #
+    'stage': load_image('stage.png'),  # символ:  =
+    'book': load_image('book.png'),  # символ: x
+    'gold_door': load_image('gold_door.png'),  # символ: *
+    'table': load_image('table.png'),  # символ: %
+    'donut': load_image('donut.png'),  # символ: !
     'hero1': load_image('hero1.png'),
     'hero2': load_image('hero2.png'),
 }
@@ -85,14 +92,24 @@ class Level:
 
         for i in range(len(level)):
             for j in range(len(level[i])):
-                if level[i][j] == '#':
+                if level[i][j] == '-':
                     self.sprite_group.add(Tile('wall', j * tile_width + delta_x, i * tile_height + delta_y))
                 elif level[i][j] == '.':
-                    self.sprite_group.add(Tile('floor', j * tile_width + delta_x, i * tile_height + delta_y))
+                    self.sprite_group.add(Tile('floor1', j * tile_width + delta_x, i * tile_height + delta_y))
                 elif level[i][j] == '0':
                     self.sprite_group.add(Tile('door', j * tile_width + delta_x, i * tile_height + delta_y))
                 elif level[i][j] == '=':
                     self.sprite_group.add(Tile('stage', j * tile_width + delta_x, i * tile_height + delta_y))
+                elif level[i][j] == '#':
+                    self.sprite_group.add(Tile('ceiling', j * tile_width + delta_x, i * tile_height + delta_y))
+                elif level[i][j] == 'x':
+                    self.sprite_group.add(Tile('book', j * tile_width + delta_x, i * tile_height + delta_y))
+                elif level[i][j] == '*':
+                    self.sprite_group.add(Tile('gold_door', j * tile_width + delta_x, i * tile_height + delta_y))
+                elif level[i][j] == '%':
+                    self.sprite_group.add(Tile('table', j * tile_width + delta_x, i * tile_height + delta_y))
+                elif level[i][j] == '!':
+                    self.sprite_group.add(Tile('donut', j * tile_width + delta_x, i * tile_height + delta_y))
 
     def get_level_map(self):
         with open('data/levels/' + self.level_name + '.txt', 'r', encoding='UTF-8') as f:
@@ -198,6 +215,14 @@ class Hero(Creature):
         if level[cell2[1]][cell2[0]] == '#':
             return False
         if level[cell3[1]][cell3[0]] == '#':
+            return False
+        if level[cell[1]][cell[0]] == '-':
+            return False
+        if level[cell1[1]][cell1[0]] == '-':
+            return False
+        if level[cell2[1]][cell2[0]] == '-':
+            return False
+        if level[cell3[1]][cell3[0]] == '-':
             return False
         return True
 
