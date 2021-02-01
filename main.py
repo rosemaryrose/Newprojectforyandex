@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
     hero = Hero(level.spawn_point[0] * tile_width, level.spawn_point[1] * tile_height)
 
+    mini_game_flag_event = True
     while True:
         key = pygame.key.get_pressed()
         hero.flip_picture('hero1')
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 
         for event in pygame.event.get():
             if key[pygame.K_t]:
-                print(os.system('water.py'))
+                print(mini_game_flag_event)
 
             if event.type == pygame.QUIT:
                 terminate()
@@ -68,7 +69,7 @@ if __name__ == '__main__':
             hero = Hero(x * tile_width, y * tile_height)
             hero.sprite_group.empty()
             hero.sprite_group.add(hero)
-        elif hero.in_cell(level_map) == 'x':
+        elif hero.in_cell(level_map) == 'x' and mini_game_flag_event:
             res = 0
             game = ''
 
@@ -80,6 +81,11 @@ if __name__ == '__main__':
                 cryst_collected += 5
                 del game_list[game_list.index(game)]
                 played_game.append([hero_cell, level.level_name])
+            elif res == 0:
+                mini_game_flag_event = False
+        else:
+            if hero.in_cell(level_map) != 'x':
+                mini_game_flag_event = True
 
         level.level_render_prepare()
 
