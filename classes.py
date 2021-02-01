@@ -16,18 +16,19 @@
 import pygame
 import sys
 import os
+import time
 import random
 
 # переменные
-FPS = 120  # ного fps грузит комп
+FPS = 60  # ного fps грузит комп
 display_size = 960, 704
 tile_width = tile_height = 64
-speed = 4  # обязательно степень двойки 2 4 8 и тд
+speed = 8  # обязательно степень двойки 2 4 8 и тд
 
 other_group = pygame.sprite.Group()
 
 hp = 100
-cryst_collected = 0
+cryst_collected = 36
 game_list = ['water.py', 'nonogram.py', 'crosstheriver.py']
 played_game = []
 
@@ -52,11 +53,13 @@ tile_images = {
     'book': load_image('book.png'),  # символ: x
     'gold_door': load_image('gold_door.png'),  # символ: *
     'table': load_image('table.png'),  # символ: %
+    'table_big': load_image('table_big.png'),
     'donut': load_image('donut.png'),  # символ: !
     'hero1': load_image('hero1.png'),
     'hero2': load_image('hero2.png'),
     'hero3': load_image('hero3.png'),
     'hero4': load_image('hero4.png'),
+    'end_screen': load_image('end_screen.png')
 }
 
 
@@ -261,11 +264,44 @@ def get_cell(m_pos):
     return [w // tile_width, h // tile_height]
 
 
-def start_screen():  # функция заставки
-    """
-        картинка для заставки, название или еще что-нибудь
-    """
-    pass
+def start_screen(screen, clock):  # функция заставки
+        for i in range(255):
+            screen.fill((i, i, i))
+            pygame.display.flip()
+            clock.tick(FPS)
+
+        sprite = pygame.sprite.Sprite()
+        sprite.image = load_image('start_screen.png')
+        sprite.rect = sprite.image.get_rect()
+        other_group.add(sprite)
+        other_group.draw(screen)
+
+        pygame.display.flip()
+
+        for i in range(500):
+            pygame.display.flip()
+            clock.tick(FPS)
+
+
+def end_screen(screen, clock):
+    for i in range(255):
+        screen.fill((i, i, i))
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    sprite = pygame.sprite.Sprite()
+    sprite.image = load_image('end_screen.png')
+    sprite.rect = sprite.image.get_rect()
+    other_group.add(sprite)
+    other_group.draw(screen)
+
+    pygame.display.flip()
+
+    for i in range(500):
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    terminate()
 
 
 def terminate():  # функция выхода
