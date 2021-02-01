@@ -62,7 +62,7 @@ if __name__ == '__main__':
             end_screen(screen, clock)
         elif hero.in_cell(level_map) == '*' and end_game_flag_event and end:
             if cryst_collected == 36:
-                res = os.system('final_game.py')
+                res = os.system('python final_game.py')
 
                 if res == 1:
                     x = level.doors[str(hero_cell)][0][0]
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
             if [hero_cell, level.level_name] not in played_game:
                 game = random.choice(game_list)
-                res = os.system(game)
+                res = os.system('python ' + game)
 
             if res == 1:
                 cryst_collected += 12
