@@ -8,7 +8,7 @@ level1
 level12
 2, 0
 0, 0
-level18
+level16
 ##0#
 #-.#
 #==#
