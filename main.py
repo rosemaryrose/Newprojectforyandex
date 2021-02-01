@@ -45,8 +45,7 @@ if __name__ == '__main__':
 
         for event in pygame.event.get():
             if key[pygame.K_t]:
-                print(level.doors)
-                print(get_cell((hero.pos_x, hero.pos_y)))
+                print(os.system('water.py'))
 
             if event.type == pygame.QUIT:
                 terminate()

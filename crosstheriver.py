@@ -3,9 +3,13 @@ import sys
 from random import randrange, choice
 
 
-def terminate():
-    pygame.quit()
-    sys.exit()
+def terminate(n=None):
+    if n is None:
+        pygame.quit()
+        sys.exit()
+    else:
+        pygame.quit()
+        sys.exit(n)
 
 
 class Board(pygame.sprite.Sprite):
@@ -95,7 +99,7 @@ class Gamer(pygame.sprite.Sprite):
             # Окончание игры, если игрок дошёл до конца
             print('win')
             end_screen()
-            terminate()
+            terminate(1)
         elif n:
             # Если игрок стоит на бревне, то его скорость равна скорости бревна
             self.rect.x += n.vx

@@ -4,9 +4,13 @@ import os
 from random import randrange
 
 
-def terminate():
-    pygame.quit()
-    sys.exit()
+def terminate(n=None):
+    if n is None:
+        pygame.quit()
+        sys.exit()
+    else:
+        pygame.quit()
+        sys.exit(n)
 
 
 def start_screen():
@@ -144,8 +148,7 @@ class MovingPipes(WaterPipes):
                 pygame.time.delay(1000)
                 end_screen()
                 print('win')
-                terminate()
-
+                terminate(1)
 
 
 screen.fill((255, 255, 255))

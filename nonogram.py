@@ -4,9 +4,13 @@ import os
 from random import randrange
 
 
-def terminate():
-    pygame.quit()
-    sys.exit()
+def terminate(n=None):
+    if n is None:
+        pygame.quit()
+        sys.exit()
+    else:
+        pygame.quit()
+        sys.exit(n)
 
 
 def start_screen():
@@ -255,7 +259,7 @@ class Nonogram:
             pygame.display.flip()
             pygame.time.delay(2000)
             end_screen()
-            terminate()
+            terminate(1)
 
 
 pygame.init()
