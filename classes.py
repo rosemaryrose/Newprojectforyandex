@@ -26,6 +26,11 @@ speed = 4  # обязательно степень двойки 2 4 8 и тд
 
 other_group = pygame.sprite.Group()
 
+hp = 100
+cryst_collected = 0
+game_list = ['water.py', 'nonogram.py', 'crosstheriver.py']
+played_game = []
+
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data/pictures', name)

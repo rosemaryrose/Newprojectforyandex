@@ -68,6 +68,18 @@ if __name__ == '__main__':
             hero = Hero(x * tile_width, y * tile_height)
             hero.sprite_group.empty()
             hero.sprite_group.add(hero)
+        elif hero.in_cell(level_map) == 'x':
+            res = 0
+            game = ''
+
+            if [hero_cell, level.level_name] not in played_game:
+                game = random.choice(game_list)
+                res = os.system(game)
+
+            if res == 1:
+                cryst_collected += 5
+                del game_list[game_list.index(game)]
+                played_game.append([hero_cell, level.level_name])
 
         level.level_render_prepare()
 
@@ -75,6 +87,32 @@ if __name__ == '__main__':
         level.sprite_group.draw(screen)
         other_group.draw(screen)
         hero.sprite_group.draw(screen)
+
+        font = pygame.font.Font('data/na-vyrost.ttf', 15)
+        font1 = pygame.font.Font('data/na-vyrost.ttf', 15)
+        string_rendered = font.render('Collected crystals: ' + str(cryst_collected), 1, pygame.Color('White'))
+        string_rendered2 = font1.render('Collected crystals: ' + str(cryst_collected), 1, pygame.Color('Black'))
+        string_rendered1 = font.render('HP: ' + str(hp), 1, pygame.Color('White'))
+        string_rendered12 = font.render('HP: ' + str(hp), 1, pygame.Color('Black'))
+        intro_rect = string_rendered.get_rect()
+        intro_rect1 = string_rendered.get_rect()
+        intro_rect2 = string_rendered.get_rect()
+        intro_rect21 = string_rendered.get_rect()
+
+        intro_rect.top = 40
+        intro_rect.x = 10
+        intro_rect2.top = 42
+        intro_rect2.x = 12
+
+        intro_rect1.top = 10
+        intro_rect1.x = 10
+        intro_rect21.top = 12
+        intro_rect21.x = 12
+
+        screen.blit(string_rendered2, intro_rect2)
+        screen.blit(string_rendered, intro_rect)
+        screen.blit(string_rendered12, intro_rect21)
+        screen.blit(string_rendered1, intro_rect1)
 
         pygame.display.flip()
         clock.tick(FPS)
